@@ -1,6 +1,27 @@
 {{ define "main" }}
 
-{{ partial "jumbotron" (dict "imageUrl" "/img/7.jpg" "title" "This is where the heading goes" "subtitle" "This is where the subtitle goes") }}
-{{ .Content }}
+  <div style="padding: 20px; border: 1px dashed #000; margin: 20px 0;">
+    <h1>{{ .Title }}</h1>
+    <p><small>发布时间: {{ .Date.Format "2006-01-02" }}</small></p>
 
+    {{ if .Params.warning }}
+      <p style="color: red; font-weight: bold;">⚠️ 预警: {{ .Params.warning }}</p>
+    {{ end }}
+
+    <hr>
+
+    {{ if .Params.embed }}
+      <div style="margin: 20px 0;">
+        {{ .Params.embed | safeHTML }}
+      </div>
+    {{ end }}
+
+    <div>
+      {{ .Content }}
+    </div>
+    
+    <br><br>
+    <a href="/">[返回首页大厅]</a>
+  </div>
 {{ end }}
+
