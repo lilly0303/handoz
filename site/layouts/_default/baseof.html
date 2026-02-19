@@ -1,17 +1,107 @@
-<!doctype html>
-<html lang="{{ $.Site.Language.Lang }}">
-  {{ partial "head" . }}
-  <body class="sans-serif">
+<!DOCTYPE html>
+<html lang="zh">
+<head>
+  <meta charset="utf-8">
+  <meta name="viewport" content="width=device-width, initial-scale=1.0">
+  <title>{{ .Title }} | Xunzhen Archive</title>
+  
+  <link href="https://fonts.googleapis.com/css2?family=VT323&display=swap" rel="stylesheet">
+  
+  <style>
+    /* 核心视觉变量 (Design Tokens) - 在这里控制全站颜色 */
+    :root {
+      --bg-color: #e0e0ff; /* 淡蓝紫色背景 (NewJeans Vibe) */
+      --border-color: #000000; /* 极致锐利的纯黑边框 (Kiiikiiii Vibe) */
+      --accent-pink: #ff99cc; /* Y2K 高光粉色 */
+    }
 
-    {{ block "header" . }}{{ partial "nav" . }}{{end}}
+    /* 全局重置 (Global Reset) */
+    * {
+      box-sizing: border-box;
+      cursor: crosshair !important; /* 强制全局使用十字准星光标 */
+    }
 
-    {{ block "main" . }}{{ end }}
+    body {
+      background-color: var(--bg-color);
+      font-family: 'Courier New', Courier, monospace; /* 复古打字机字体 */
+      color: var(--border-color);
+      margin: 0;
+      padding: 20px;
+      display: flex;
+      justify-content: center;
+      align-items: flex-start;
+      min-height: 100vh;
+    }
 
-    {{ block "footer" . }}{{ partial "footer" . }}{{end}}
+    /* 主舞台容器 (The Main Stage) */
+    .desktop-wrapper {
+      width: 100%;
+      max-width: 850px;
+      background-color: #fff;
+      border: 2px solid var(--border-color);
+      box-shadow: 10px 10px 0px var(--accent-pink); /* 标志性的硬边缘投影 */
+      margin-top: 20px;
+      position: relative;
+    }
 
-    {{ $script := .Site.Data.webpack.main }}
-    {{ with $script.js }}
-      <script src="{{ relURL . }}"></script>
-    {{ end }}
-  </body>
+    /* 顶部系统导航条 (System Top Bar) */
+    .system-bar {
+      background-color: var(--border-color);
+      color: #fff;
+      padding: 8px 15px;
+      font-family: 'VT323', monospace; /* 像素字体应用 */
+      font-size: 1.5rem;
+      display: flex;
+      justify-content: space-between;
+      align-items: center;
+      border-bottom: 2px solid var(--border-color);
+    }
+
+    .system-bar a {
+      color: var(--accent-pink);
+      text-decoration: none;
+      margin-left: 20px;
+      transition: color 0.2s;
+    }
+
+    .system-bar a:hover {
+      color: #fff;
+      text-shadow: 0 0 5px var(--accent-pink);
+    }
+
+    /* 动态内容注入区 (Content Area) */
+    .content-area {
+      padding: 30px;
+    }
+    
+    /* 链接基础样式 */
+    .content-area a {
+      color: blue;
+      text-decoration: underline;
+    }
+    .content-area a:hover {
+      background-color: var(--accent-pink);
+      color: #000;
+    }
+  </style>
+</head>
+<body>
+
+  <div class="desktop-wrapper">
+    
+    <div class="system-bar">
+      <span>★ XUNZHEN.OS_</span>
+      <div>
+        <a href="/">[HOME]</a>
+        <a href="/admin/">[LOGIN]</a>
+      </div>
+    </div>
+
+    <div class="content-area">
+      {{ block "main" . }}{{ end }}
+    </div>
+
+  </div>
+
+</body>
 </html>
