@@ -1,103 +1,29 @@
 {{ define "main" }}
 
-<style>
-  /* Kiiikiiii x NewJeans 视觉基调 */
-  body {
-    background-color: #e0e0ff; /* 淡蓝紫色背景 */
-    font-family: 'Courier New', monospace; /* 复古打字机字体 */
-    cursor: crosshair; /* 锐利的十字准星光标 */
-  }
-  
-  .desktop-container {
-    max-width: 800px;
-    margin: 60px auto;
-    background: #ffffff;
-    border: 2px solid #000; /* 锐利黑边 */
-    box-shadow: 10px 10px 0px #ff99cc; /* NewJeans 标志性的粉色像素阴影 */
-    padding: 30px;
-  }
+{{ define "main" }}
+  <h1>Archive Core Logic (核心逻辑测试)</h1>
+  <hr>
 
-  .window-header {
-    border-bottom: 2px dashed #000;
-    padding-bottom: 15px;
-    margin-bottom: 30px;
-    display: flex;
-    justify-content: space-between;
-    font-weight: bold;
-    font-size: 1.2rem;
-  }
+  <h2> 同人文库 (Fiction)</h2>
+  <ul>
+    {{ range where .Site.RegularPages "Section" "fiction" }}
+      <li>
+        <a href="{{ .RelPermalink }}">{{ .Title }}</a> 
+        <small>[{{ .Date.Format "2006-01-02" }}]</small>
+      </li>
+    {{ else }}
+      <li>暂无归档 (Data Empty)</li>
+    {{ end }}
+  </ul>
 
-  .folder {
-    border: 1px solid #000;
-    background: #f4f4f9;
-    padding: 20px;
-    margin-bottom: 25px;
-  }
-
-  .folder h2 {
-    margin-top: 0;
-    font-size: 1.3rem;
-    text-transform: uppercase;
-    border-bottom: 1px solid #ccc;
-    padding-bottom: 10px;
-  }
-
-  .feed-list {
-    list-style-type: square;
-    padding-left: 20px;
-  }
-
-  .feed-list li {
-    margin-bottom: 10px;
-  }
-
-  .feed-list a {
-    color: #000;
-    text-decoration: none;
-    font-weight: bold;
-    padding: 2px 5px;
-    transition: all 0.2s;
-  }
-
-  .feed-list a:hover {
-    background: #ff99cc; /* 鼠标悬停高亮粉色 */
-    color: #000;
-  }
-</style>
-
-<div class="desktop-container">
-  <div class="window-header">
-    <span>★ Archive.exe</span>
-    <span>[-][O][X]</span>
-  </div>
-
-  <p>System initialized. Welcome to the logic entity of Xunzhen.</p>
-  <br>
-
-  <div class="folder">
-    <h2>📁 /Fiction/ (最新入库)</h2>
-    <ul class="feed-list">
-      {{ range first 5 (where .Site.RegularPages "Section" "fiction") }}
-        <li>
-          <a href="{{ .RelPermalink }}">{{ .Title }}</a> 
-          <span style="font-size: 0.8rem; color: #666;">[{{ .Date.Format "2006-01-02" }}]</span>
-        </li>
-      {{ else }}
-        <li>Data empty. 暂无归档。</li>
-      {{ end }}
-    </ul>
-  </div>
-
-  <div class="folder">
-    <h2>📼 /Cinema/ (监控录像)</h2>
-    <ul class="feed-list">
-      {{ range first 5 (where .Site.RegularPages "Section" "cinema") }}
-        <li><a href="{{ .RelPermalink }}">{{ .Title }}</a></li>
-      {{ else }}
-        <li>Signal lost. 暂无影像。</li>
-      {{ end }}
-    </ul>
-  </div>
-</div>
+  <h2> 影像档案馆 (Cinema)</h2>
+  <ul>
+    {{ range where .Site.RegularPages "Section" "cinema" }}
+      <li><a href="{{ .RelPermalink }}">{{ .Title }}</a></li>
+    {{ else }}
+      <li>暂无影像 (Signal Lost)</li>
+    {{ end }}
+  </ul>
+{{ end }}
 
 {{ end }}
