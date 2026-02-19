@@ -3,104 +3,116 @@
 <head>
   <meta charset="utf-8">
   <meta name="viewport" content="width=device-width, initial-scale=1.0">
-  <title>{{ .Title }} | Xunzhen Archive</title>
+  <title>{{ if .IsHome }}HANDOZ MEDIA CENTER{{ else }}{{ .Title }} | HANDOZ{{ end }}</title>
   
+  <link rel="preconnect" href="https://fonts.googleapis.com">
   <link href="https://fonts.googleapis.com/css2?family=VT323&display=swap" rel="stylesheet">
   
   <style>
-    /* 核心视觉变量 (Design Tokens) - 在这里控制全站颜色 */
     :root {
-      --bg-color: #e0e0ff; /* 淡蓝紫色背景 (NewJeans Vibe) */
-      --border-color: #000000; /* 极致锐利的纯黑边框 (Kiiikiiii Vibe) */
-      --accent-pink: #ff99cc; /* Y2K 高光粉色 */
+      --desktop-bg: #008080; /* 经典 Win98/XP 深青色桌面 */
+      --xp-blue: #0058e6;
+      --xp-blue-light: #3a93ff;
+      --silver-panel: #ece9d8; /* XP 默认的银灰色面板 */
+      --winamp-lcd: #111122;
+      --winamp-green: #00ff00;
+      --winamp-pink: #ffb3c6;
     }
 
-    /* 全局重置 (Global Reset) */
-    * {
-      box-sizing: border-box;
-      cursor: crosshair !important; /* 强制全局使用十字准星光标 */
-    }
+    * { box-sizing: border-box; }
 
     body {
-      background-color: var(--bg-color);
-      font-family: 'Courier New', Courier, monospace; /* 复古打字机字体 */
-      color: var(--border-color);
       margin: 0;
       padding: 20px;
+      background-color: var(--desktop-bg);
+      font-family: Tahoma, 'Trebuchet MS', sans-serif; /* 纯正千禧年系统字体 */
+      min-height: 100vh;
       display: flex;
       justify-content: center;
       align-items: flex-start;
-      min-height: 100vh;
     }
 
-    /* 主舞台容器 (The Main Stage) */
-    .desktop-wrapper {
+    /* Windows XP 主视窗 */
+    .xp-window {
       width: 100%;
       max-width: 850px;
-      background-color: #fff;
-      border: 2px solid var(--border-color);
-      box-shadow: 10px 10px 0px var(--accent-pink); /* 标志性的硬边缘投影 */
-      margin-top: 20px;
+      background: var(--silver-panel);
+      border: 1px solid #fff;
+      border-right-color: #716f64;
+      border-bottom-color: #716f64;
+      border-radius: 8px 8px 0 0;
+      box-shadow: 2px 2px 10px rgba(0,0,0,0.5);
+      margin-top: 30px;
+      margin-bottom: 50px;
       position: relative;
     }
 
-    /* 顶部系统导航条 (System Top Bar) */
-    .system-bar {
-      background-color: var(--border-color);
-      color: #fff;
-      padding: 8px 15px;
-      font-family: 'VT323', monospace; /* 像素字体应用 */
-      font-size: 1.5rem;
+    /* 经典蓝色渐变标题栏 */
+    .title-bar {
+      background: linear-gradient(to right, var(--xp-blue) 0%, var(--xp-blue-light) 80%, var(--xp-blue) 100%);
+      color: white;
+      padding: 5px 10px;
+      font-weight: bold;
+      font-size: 14px;
+      border-radius: 6px 6px 0 0;
       display: flex;
       justify-content: space-between;
       align-items: center;
-      border-bottom: 2px solid var(--border-color);
+      text-shadow: 1px 1px 2px #000;
     }
 
-    .system-bar a {
-      color: var(--accent-pink);
-      text-decoration: none;
-      margin-left: 20px;
-      transition: color 0.2s;
+    /* 红色的关闭按钮 */
+    .close-btn {
+      background: #e04343;
+      border: 1px solid #fff;
+      border-right-color: #666;
+      border-bottom-color: #666;
+      color: white;
+      font-weight: bold;
+      padding: 0 5px;
+      border-radius: 3px;
+      cursor: pointer;
     }
 
-    .system-bar a:hover {
-      color: #fff;
-      text-shadow: 0 0 5px var(--accent-pink);
+    .toolbar {
+      background: var(--silver-panel);
+      padding: 5px 10px;
+      border-bottom: 1px solid #ACA899;
+      font-size: 13px;
+      display: flex;
+      gap: 15px;
     }
 
-    /* 动态内容注入区 (Content Area) */
-    .content-area {
-      padding: 30px;
-    }
-    
-    /* 链接基础样式 */
-    .content-area a {
-      color: blue;
-      text-decoration: underline;
-    }
-    .content-area a:hover {
-      background-color: var(--accent-pink);
+    .toolbar a {
       color: #000;
+      text-decoration: none;
+    }
+
+    .toolbar a:hover { text-decoration: underline; color: var(--xp-blue); }
+
+    .content-area {
+      padding: 20px;
     }
   </style>
 </head>
 <body>
 
-  <div class="desktop-wrapper">
+  <div class="xp-window">
+    <div class="title-bar">
+      <span>▶ HANDOZ_MEDIA_CENTER.exe</span>
+      <div class="close-btn">X</div>
+    </div>
     
-    <div class="system-bar">
-      <span>★ XUNZHEN.OS_</span>
-      <div>
-        <a href="/">[HOME]</a>
-        <a href="/admin/">[LOGIN]</a>
-      </div>
+    <div class="toolbar">
+      <a href="/"><u>F</u>ile</a>
+      <a href="/"><u>P</u>lay</a>
+      <a href="/admin/"><u>V</u>iew (Login)</a>
+      <a href="/"><u>H</u>elp</a>
     </div>
 
     <div class="content-area">
       {{ block "main" . }}{{ end }}
     </div>
-
   </div>
 
 </body>
