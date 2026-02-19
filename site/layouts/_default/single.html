@@ -1,34 +1,80 @@
 {{ define "main" }}
-  <div style="padding: 20px; border: 1px dashed #000; margin: 20px 0; max-width: 800px;">
-    <h1>{{ .Title }}</h1>
-    <p><small>发布时间: {{ .Date.Format "2006-01-02" }}</small></p>
+<style>
+  .player-frame {
+    background: #e4e4e4;
+    border: 2px solid #fff;
+    border-right-color: #999;
+    border-bottom-color: #999;
+    padding: 10px;
+    margin-top: 10px;
+  }
 
-    {{ if .Params.warning }}
-      <p style="color: red; font-weight: bold;">⚠️ 预警: {{ .Params.warning }}</p>
-    {{ end }}
+  .player-title {
+    font-family: 'Trebuchet MS', Tahoma, sans-serif;
+    font-size: 1.2rem;
+    font-weight: bold;
+    color: #333;
+    background: #d4d0c8;
+    padding: 5px;
+    border: 1px inset #fff;
+    margin-bottom: 15px;
+    display: flex;
+    justify-content: space-between;
+  }
 
-    <hr>
+  .video-container {
+    background: #000;
+    padding: 5px;
+    border: 3px inset #888;
+    margin-bottom: 15px;
+  }
 
-    {{ if .Params.embed }}
-      <style>
-        /* 强行覆盖 B站默认的小尺寸，锁定 16:9 黄金比例 (Aspect Ratio) */
-        .video-container iframe {
-          width: 100%;
-          aspect-ratio: 16 / 9;
-          border: 2px solid #000;
-          box-shadow: 5px 5px 0px #ccc; /* 增加一点复古厚重感 */
-        }
-      </style>
-      <div class="video-container" style="margin: 20px 0;">
-        {{ replace .Params.embed "player.html?" "player.html?high_quality=1&danmaku=0&" | safeHTML }}
-      </div>
-    {{ end }}
+  .video-container iframe {
+    width: 100%;
+    aspect-ratio: 16 / 9;
+    display: block;
+  }
 
-    <div>
-      {{ .Content }}
-    </div>
-    
-    <br><br>
-    <a href="/">[返回首页大厅]</a>
+  .text-content {
+    background: #fff;
+    border: 2px inset #ccc;
+    padding: 20px;
+    font-family: 'Courier New', Courier, monospace;
+    font-size: 14px;
+    line-height: 1.6;
+    color: #000;
+    min-height: 300px;
+  }
+</style>
+
+<div class="player-frame">
+  
+  <div class="player-title">
+    <span>Now Playing: {{ .Title }}</span>
+    <span style="color: #666; font-size: 0.9rem;">{{ .Date.Format "2006/01/02" }}</span>
   </div>
+
+  {{ if .Params.warning }}
+    <div style="background: yellow; border: 1px solid red; color: red; padding: 5px; margin-bottom: 15px; font-weight: bold;">
+      ⚠ WARNING: {{ .Params.warning }}
+    </div>
+  {{ end }}
+
+  {{ if .Params.embed }}
+    <div class="video-container">
+      {{ replace .Params.embed "player.html?" "player.html?high_quality=1&danmaku=0&" | safeHTML }}
+    </div>
+  {{ end }}
+
+  <div class="text-content">
+    {{ .Content }}
+  </div>
+  
+  <div style="margin-top: 15px;">
+    <button onclick="window.location.href='/'" style="font-family: Tahoma; padding: 5px 15px; cursor: pointer;">
+      ■ STOP & RETURN
+    </button>
+  </div>
+
+</div>
 {{ end }}
