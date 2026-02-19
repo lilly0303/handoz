@@ -1,6 +1,5 @@
 {{ define "main" }}
-
-  <div style="padding: 20px; border: 1px dashed #000; margin: 20px 0;">
+  <div style="padding: 20px; border: 1px dashed #000; margin: 20px 0; max-width: 800px;">
     <h1>{{ .Title }}</h1>
     <p><small>发布时间: {{ .Date.Format "2006-01-02" }}</small></p>
 
@@ -11,8 +10,17 @@
     <hr>
 
     {{ if .Params.embed }}
-      <div style="margin: 20px 0;">
-        {{ .Params.embed | safeHTML }}
+      <style>
+        /* 强行覆盖 B站默认的小尺寸，锁定 16:9 黄金比例 (Aspect Ratio) */
+        .video-container iframe {
+          width: 100%;
+          aspect-ratio: 16 / 9;
+          border: 2px solid #000;
+          box-shadow: 5px 5px 0px #ccc; /* 增加一点复古厚重感 */
+        }
+      </style>
+      <div class="video-container" style="margin: 20px 0;">
+        {{ replace .Params.embed "player.html?" "player.html?high_quality=1&danmaku=0&" | safeHTML }}
       </div>
     {{ end }}
 
@@ -24,4 +32,3 @@
     <a href="/">[返回首页大厅]</a>
   </div>
 {{ end }}
-
