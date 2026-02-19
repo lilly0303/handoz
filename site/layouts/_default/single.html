@@ -1,31 +1,34 @@
 {{ define "main" }}
 <style>
-  .player-frame {
-    background: #e4e4e4;
-    border: 2px solid #fff;
-    border-right-color: #999;
-    border-bottom-color: #999;
-    padding: 10px;
-    margin-top: 10px;
-  }
-
-  .player-title {
-    font-family: 'Trebuchet MS', Tahoma, sans-serif;
-    font-size: 1.2rem;
-    font-weight: bold;
-    color: #333;
-    background: #d4d0c8;
-    padding: 5px;
-    border: 1px inset #fff;
+  /* 正在播放的元数据区 */
+  .now-playing-header {
+    text-align: center;
+    border-bottom: 1px solid rgba(112, 181, 255, 0.3);
+    padding-bottom: 10px;
     margin-bottom: 15px;
-    display: flex;
-    justify-content: space-between;
   }
 
+  .now-playing-header h1 {
+    font-size: 18px;
+    color: #fff;
+    margin: 0 0 5px 0;
+    text-shadow: 0 0 8px var(--glow-cyan);
+  }
+
+  .now-playing-header p {
+    font-family: 'VT323', monospace;
+    color: var(--glow-cyan);
+    margin: 0;
+    font-size: 14px;
+  }
+
+  /* 视频外框 */
   .video-container {
     background: #000;
-    padding: 5px;
-    border: 3px inset #888;
+    border-radius: 6px;
+    border: 2px solid rgba(255,255,255,0.2);
+    box-shadow: 0 5px 15px rgba(0,0,0,0.5);
+    overflow: hidden;
     margin-bottom: 15px;
   }
 
@@ -35,46 +38,49 @@
     display: block;
   }
 
-  .text-content {
-    background: #fff;
-    border: 2px inset #ccc;
-    padding: 20px;
-    font-family: 'Courier New', Courier, monospace;
-    font-size: 14px;
+  /* 歌词/文章滚动区 */
+  .lyrics-content {
+    background: rgba(0, 0, 0, 0.2);
+    border: 1px inset rgba(255,255,255,0.1);
+    border-radius: 4px;
+    padding: 15px;
+    font-family: var(--font-ui);
+    font-size: 13px;
     line-height: 1.6;
-    color: #000;
-    min-height: 300px;
+    color: #e0f0ff;
+    text-shadow: 1px 1px 1px #000;
   }
+
+  .lyrics-content p { margin-top: 0; }
 </style>
 
-<div class="player-frame">
-  
-  <div class="player-title">
-    <span>Now Playing: {{ .Title }}</span>
-    <span style="color: #666; font-size: 0.9rem;">{{ .Date.Format "2006/01/02" }}</span>
-  </div>
-
-  {{ if .Params.warning }}
-    <div style="background: yellow; border: 1px solid red; color: red; padding: 5px; margin-bottom: 15px; font-weight: bold;">
-      ⚠ WARNING: {{ .Params.warning }}
-    </div>
-  {{ end }}
-
-  {{ if .Params.embed }}
-    <div class="video-container">
-      {{ replace .Params.embed "player.html?" "player.html?high_quality=1&danmaku=0&" | safeHTML }}
-    </div>
-  {{ end }}
-
-  <div class="text-content">
-    {{ .Content }}
-  </div>
-  
-  <div style="margin-top: 15px;">
-    <button onclick="window.location.href='/'" style="font-family: Tahoma; padding: 5px 15px; cursor: pointer;">
-      ■ STOP & RETURN
-    </button>
-  </div>
-
+<div class="status-bar" style="display: flex; justify-content: space-between; font-family: 'VT323'; font-size: 16px; border-bottom: 1px solid rgba(112, 181, 255, 0.3); padding-bottom: 5px; margin-bottom: 15px; color: #e0f0ff;">
+  <span>▶ NOW_PLAYING</span>
+  <span style="animation: blink 1s infinite;">_</span>
 </div>
+
+<div class="now-playing-header">
+  <h1>{{ .Title }}</h1>
+  <p>[TRACK_DATE: {{ .Date.Format "2006.01.02" }}]</p>
+</div>
+
+{{ if .Params.warning }}
+  <div style="background: rgba(255,0,0,0.2); border: 1px solid red; color: #ff9999; padding: 5px; font-size: 12px; text-align: center; margin-bottom: 15px; border-radius: 3px;">
+    ⚠ CAUTION: {{ .Params.warning }}
+  </div>
+{{ end }}
+
+{{ if .Params.embed }}
+  <div class="video-container">
+    {{ replace .Params.embed "player.html?" "player.html?high_quality=1&danmaku=0&" | safeHTML }}
+  </div>
+{{ end }}
+
+<div class="lyrics-content">
+  {{ .Content }}
+</div>
+
+<style>
+  @keyframes blink { 0%, 100% { opacity: 1; } 50% { opacity: 0; } }
+</style>
 {{ end }}
