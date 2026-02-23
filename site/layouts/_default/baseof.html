@@ -3,154 +3,183 @@
 <head>
   <meta charset="utf-8">
   <meta name="viewport" content="width=device-width, initial-scale=1.0">
-  <title>{{ if .IsHome }}HANDOZ PLAYER{{ else }}{{ .Title }} | HANDOZ{{ end }}</title>
-  
-  <link rel="preconnect" href="https://fonts.googleapis.com">
-  <link href="https://fonts.googleapis.com/css2?family=VT323&display=swap" rel="stylesheet">
+  <title>{{ .Title }} | HANDOZ OS</title>
   
   <style>
-    /* 拟物化核心变量 */
-    :root {
-      --bg-dark: #0a0a0a; /* Lain 风格深黑背景 */
-      --metal-light: #fdfdfd;
-      --metal-mid: #d4d6db;
-      --metal-dark: #9ea1a8;
-      --glass-blue: #092c5a; /* WMP 冰蓝屏幕 */
-      --glass-blue-light: #165baf;
-      --glow-cyan: #70b5ff;
-      --font-ui: Tahoma, 'Trebuchet MS', sans-serif;
-    }
-
-    * { box-sizing: border-box; }
-
+    /* =========================================
+       1. 全局重置与壁纸 (Wallpaper)
+       ========================================= */
     body {
       margin: 0;
-      padding: 20px;
-      background-color: var(--bg-dark);
-      /* 模拟 Lain 风格的深色网格/线缆背景暗示 */
-      background-image: radial-gradient(circle at 50% 50%, #222 0%, #000 100%);
-      font-family: var(--font-ui);
-      min-height: 100vh;
-      display: flex;
-      justify-content: center;
-      align-items: center;
+      padding: 0;
+      /* 使用 Mac 经典的 Lucida Grande 字体系列 */
+      font-family: "Lucida Grande", "Lucida Sans Unicode", Tahoma, sans-serif;
+      /* 锁定屏幕，不允许出现网页原生的上下滚动条 */
+      overflow: hidden; 
+      
+      /* 这里的路径指向你刚才上传的图片 */
+      background-image: url('/images/wallpaper.jpg');
+      background-size: cover; /* 让图片完美铺满整个屏幕 */
+      background-position: center;
+      background-repeat: no-repeat;
+      height: 100vh;
+      width: 100vw;
     }
 
-    /* 播放器金属外壳 (The Device) */
-    .media-player-body {
+    /* =========================================
+       2. 顶部菜单栏 (Top Menu Bar)
+       ========================================= */
+    .mac-menubar {
+      position: fixed;
+      top: 0;
+      left: 0;
       width: 100%;
-      max-width: 420px; /* 模拟便携设备的窄长比例 */
-      background: linear-gradient(to bottom, var(--metal-light) 0%, var(--metal-mid) 40%, var(--metal-dark) 100%);
-      border-radius: 30px; /* 圆润的 iPod 边缘 */
-      padding: 20px;
-      /* 极其逼真的硬件厚度与阴影 */
-      box-shadow: 
-        inset 0 2px 3px rgba(255,255,255,0.8),
-        inset 0 -2px 5px rgba(0,0,0,0.3),
-        0 15px 35px rgba(0,0,0,0.8),
-        0 0 0 1px #888;
-    }
-
-    /* 屏幕黑色边框 (The Bezel) */
-    .screen-bezel {
-      background: #111;
-      border-radius: 15px;
-      padding: 12px;
-      box-shadow: inset 0 3px 8px rgba(0,0,0,0.9), 0 1px 1px rgba(255,255,255,0.4);
-      margin-bottom: 25px;
-    }
-
-    /* 蓝色高光玻璃屏幕 (The LCD Screen) */
-    .lcd-screen {
-      background: linear-gradient(135deg, var(--glass-blue) 0%, var(--glass-blue-light) 100%);
-      border-radius: 5px;
-      min-height: 380px;
-      position: relative;
-      overflow: hidden;
-      color: var(--glow-cyan);
-      box-shadow: inset 0 0 15px rgba(0,0,0,0.8);
-    }
-
-    /* 模拟玻璃屏幕顶部的反光 (Glass Glare) */
-    .lcd-screen::before {
-      content: "";
-      position: absolute;
-      top: 0; left: 0; right: 0; height: 40%;
-      background: linear-gradient(to bottom, rgba(255,255,255,0.15) 0%, rgba(255,255,255,0) 100%);
-      pointer-events: none;
-    }
-
-    /* 屏幕内边距 */
-    .screen-content {
-      padding: 15px;
-      height: 100%;
-      position: relative;
-      z-index: 2;
-      overflow-y: auto;
-    }
-
-    /* 硬件导航按钮区 (Hardware Controls) */
-    .controls-panel {
+      height: 24px;
+      /* Aqua 风格特有的白色微渐变与阴影 */
+      background: linear-gradient(to bottom, #ffffff 0%, #eeeeee 100%);
+      border-bottom: 1px solid #999;
+      box-shadow: 0 1px 3px rgba(0,0,0,0.2);
+      
       display: flex;
-      justify-content: center;
-      gap: 20px;
-      padding-bottom: 10px;
-    }
-
-    /* 拟物化水晶按钮 */
-    .btn-crystal {
-      display: flex;
-      justify-content: center;
+      justify-content: space-between;
       align-items: center;
+      padding: 0 15px;
+      z-index: 9999;
+      font-size: 13px;
+      user-select: none; /* 防止文字被意外选中，增强系统真实感 */
+    }
+
+    .menubar-left {
+      display: flex;
+      gap: 15px;
+      align-items: center;
+    }
+
+    .menubar-item {
+      color: #000;
+      cursor: default;
+      padding: 0 6px;
+      height: 24px;
+      line-height: 24px;
+    }
+
+    /* 模拟鼠标放上去变成蓝色高亮区块的效果 */
+    .menubar-item:hover {
+      background: #0058e6; 
+      color: white;
+      border-radius: 3px;
+    }
+
+    /* 经典苹果 Logo 和加粗的当前应用名 */
+    .apple-logo { font-size: 15px; font-weight: bold; }
+    .app-name { font-weight: bold; }
+
+    /* =========================================
+       3. 底部停靠栏 (The Dock)
+       ========================================= */
+    .mac-dock-container {
+      position: fixed;
+      bottom: 0;
+      left: 50%;
+      transform: translateX(-50%); /* 保证它永远在屏幕正中间 */
+      
+      /* 半透明的玻璃托盘底座 */
+      background: rgba(255, 255, 255, 0.2);
+      border: 1px solid rgba(255, 255, 255, 0.4);
+      border-bottom: none;
+      border-radius: 8px 8px 0 0;
+      padding: 5px 15px 0 15px;
+      
+      display: flex;
+      gap: 10px;
+      align-items: flex-end; /* 让所有图标沉底对齐 */
+      z-index: 9990;
+    }
+
+    /* 占位图标样式 */
+    .dock-icon {
       width: 50px;
       height: 50px;
-      border-radius: 50%;
-      text-decoration: none;
-      font-size: 10px;
-      font-weight: bold;
-      color: #333;
-      /* 经典的 WMP 水晶按钮渐变 */
-      background: linear-gradient(to bottom, #fff 0%, #e0e0e0 45%, #ccc 50%, #eee 100%);
-      box-shadow: 
-        0 4px 6px rgba(0,0,0,0.4),
-        inset 0 -2px 4px rgba(0,0,0,0.2),
-        inset 0 2px 4px rgba(255,255,255,0.9);
-      transition: all 0.1s;
+      /* 这里的背景色是暂时用来区分的，之后我们会放上真实的图片 */
+      background: linear-gradient(to bottom, rgba(255,255,255,0.8), rgba(200,200,200,0.8));
+      border: 1px solid rgba(0,0,0,0.3);
+      border-radius: 12px;
+      margin-bottom: 5px;
+      
+      display: flex;
+      justify-content: center;
+      align-items: center;
+      font-size: 24px;
+      cursor: pointer;
+      
+      /* 核心交互：Mac Dock 经典的鼠标悬停变大效果 */
+      transition: transform 0.2s cubic-bezier(0.2, 0.8, 0.2, 1), margin 0.2s;
+      
+      /* 极其逼真的倒影特效 (Webkit内核专属) */
+      -webkit-box-reflect: below 2px linear-gradient(transparent, transparent 50%, rgba(255,255,255,0.3));
     }
 
-    .btn-crystal:active {
-      box-shadow: inset 0 2px 6px rgba(0,0,0,0.4);
-      transform: translateY(2px);
+    /* 当鼠标悬停时，图标放大并稍微上浮 */
+    .dock-icon:hover {
+      transform: scale(1.6) translateY(-10px);
+      margin: 0 15px; 
+      z-index: 10;
     }
-    
-    /* 大号播放按钮 */
-    .btn-crystal.btn-play {
-      width: 65px;
-      height: 65px;
-      font-size: 14px;
-      color: var(--glass-blue-light);
+
+    /* =========================================
+       4. 桌面核心内容区 (为后续的 Window 预留位置)
+       ========================================= */
+    .desktop-area {
+      margin-top: 24px; /* 完美避开顶部的菜单栏 */
+      height: calc(100vh - 24px);
+      position: relative;
     }
   </style>
 </head>
 <body>
 
-  <div class="media-player-body">
-    
-    <div class="screen-bezel">
-      <div class="lcd-screen">
-        <div class="screen-content">
-          {{ block "main" . }}{{ end }}
-        </div>
-      </div>
+  <div class="mac-menubar">
+    <div class="menubar-left">
+      <span class="menubar-item apple-logo"></span>
+      <span class="menubar-item app-name">Finder</span>
+      <span class="menubar-item">File</span>
+      <span class="menubar-item">Edit</span>
+      <span class="menubar-item">View</span>
+      <span class="menubar-item">Go</span>
+      <span class="menubar-item">Special</span>
+      <span class="menubar-item">Help</span>
     </div>
-
-    <div class="controls-panel">
-      <a href="/" class="btn-crystal">MENU</a>
-      <a href="/" class="btn-crystal btn-play">▶</a>
-      <a href="/admin/" class="btn-crystal">SYNC</a>
+    <div class="menubar-right">
+      <span class="menubar-item" id="system-clock">12:00 PM</span>
     </div>
-
   </div>
+
+  <div class="desktop-area">
+    {{ block "main" . }}{{ end }}
+  </div>
+
+  <div class="mac-dock-container">
+    <a href="/" class="dock-icon" title="Finder">📁</a>
+    <a href="/" class="dock-icon" title="Fiction">📝</a>
+    <a href="/" class="dock-icon" title="Cinema">🎬</a>
+    <a href="/admin/" class="dock-icon" title="Settings">⚙️</a>
+    <a href="/" class="dock-icon" title="Trash">🗑️</a>
+  </div>
+
+  <script>
+    function updateClock() {
+      const now = new Date();
+      let hours = now.getHours();
+      let minutes = now.getMinutes();
+      const ampm = hours >= 12 ? 'PM' : 'AM';
+      hours = hours % 12;
+      hours = hours ? hours : 12; 
+      minutes = minutes < 10 ? '0' + minutes : minutes;
+      document.getElementById('system-clock').innerText = hours + ':' + minutes + ' ' + ampm;
+    }
+    setInterval(updateClock, 1000);
+    updateClock();
+  </script>
 
 </body>
 </html>
