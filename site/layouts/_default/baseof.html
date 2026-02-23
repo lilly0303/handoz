@@ -7,178 +7,165 @@
   
   <style>
     /* =========================================
-       1. 全局重置与壁纸 (Wallpaper)
+       1. 全局背景
        ========================================= */
     body {
-      margin: 0;
-      padding: 0;
-      /* 使用 Mac 经典的 Lucida Grande 字体系列 */
+      margin: 0; padding: 0;
       font-family: "Lucida Grande", "Lucida Sans Unicode", Tahoma, sans-serif;
-      /* 锁定屏幕，不允许出现网页原生的上下滚动条 */
-      overflow: hidden; 
-      
-      /* 这里的路径指向你刚才上传的图片 */
-      background-image: url('/img/wallpaper.jpg');
-      background-size: cover; /* 让图片完美铺满整个屏幕 */
-      background-position: right bottom;
-      background-repeat: no-repeat;
-      height: 100vh;
-      width: 100vw;
+      /* 因为你的图片自带黑色背景，这里底色设为纯黑即可 */
+      background-color: #000;
+      height: 100vh; width: 100vw;
+      display: flex; justify-content: center; align-items: center;
+      overflow: hidden; /* 禁止滚动条出现 */
     }
 
     /* =========================================
-       2. 顶部菜单栏 (Top Menu Bar)
+       2. 主容器 (The Main Rig)
        ========================================= */
-    .mac-menubar {
-      position: fixed;
-      top: 0;
-      left: 0;
-      width: 100%;
-      height: 24px;
-      /* Aqua 风格特有的白色微渐变与阴影 */
-      background: linear-gradient(to bottom, #ffffff 0%, #eeeeee 100%);
-      border-bottom: 1px solid #999;
-      box-shadow: 0 1px 3px rgba(0,0,0,0.2);
-      
-      display: flex;
-      justify-content: space-between;
-      align-items: center;
-      padding: 0 15px;
-      z-index: 9999;
-      font-size: 13px;
-      user-select: none; /* 防止文字被意外选中，增强系统真实感 */
-    }
-
-    .menubar-left {
-      display: flex;
-      gap: 15px;
-      align-items: center;
-    }
-
-    .menubar-item {
-      color: #000;
-      cursor: default;
-      padding: 0 6px;
-      height: 24px;
-      line-height: 24px;
-    }
-
-    /* 模拟鼠标放上去变成蓝色高亮区块的效果 */
-    .menubar-item:hover {
-      background: #0058e6; 
-      color: white;
-      border-radius: 3px;
-    }
-
-    /* 经典苹果 Logo 和加粗的当前应用名 */
-    .apple-logo { font-size: 15px; font-weight: bold; }
-    .app-name { font-weight: bold; }
-
-    /* =========================================
-       3. 底部停靠栏 (The Dock)
-       ========================================= */
-    .mac-dock-container {
-      position: fixed;
-      bottom: 0;
-      left: 50%;
-      transform: translateX(-50%); /* 保证它永远在屏幕正中间 */
-      
-      /* 半透明的玻璃托盘底座 */
-      background: rgba(255, 255, 255, 0.2);
-      border: 1px solid rgba(255, 255, 255, 0.4);
-      border-bottom: none;
-      border-radius: 8px 8px 0 0;
-      padding: 10px 20px 0 20px;
-      
-      display: flex;
-      gap: 10px;
-      align-items: flex-end; /* 让所有图标沉底对齐 */
-      z-index: 9990;
-    }
-
-    /* 占位图标样式 */
-    .dock-icon {
-      width: 64px;          /* 从 50px 放大 */
-      height: 64px;         /* 从 50px 放大 */
-      border-radius: 14px;  /* 让边缘更圆润 */
-      font-size: 32px;      /* 让 Emoji 变大 */
-      /* 这里的背景色是暂时用来区分的，之后我们会放上真实的图片 */
-      background: linear-gradient(to bottom, rgba(255,255,255,0.8), rgba(200,200,200,0.8));
-      border: 1px solid rgba(0,0,0,0.3);
-      margin-bottom: 5px;
-      
+    .main-container {
+      position: relative;
+      /* 限制最大尺寸，保持4:3比例，防止在大屏上溢出 */
+      width: auto;
+      height: 96vh; /* 高度占满屏幕96%，留一点边 */
+      aspect-ratio: 4 / 3; 
       display: flex;
       justify-content: center;
       align-items: center;
-      cursor: pointer;
-      
-      /* 核心交互：Mac Dock 经典的鼠标悬停变大效果 */
-      transition: transform 0.2s cubic-bezier(0.2, 0.8, 0.2, 1), margin 0.2s;
-      
-      /* 极其逼真的倒影特效 (Webkit内核专属) */
-      -webkit-box-reflect: below 2px linear-gradient(transparent, transparent 50%, rgba(255,255,255,0.3));
-    }
-
-    /* 当鼠标悬停时，图标放大并稍微上浮 */
-    .dock-icon:hover {
-      transform: scale(1.6) translateY(-10px);
-      margin: 0 15px; 
-      z-index: 10;
     }
 
     /* =========================================
-       4. 桌面核心内容区 (为后续的 Window 预留位置)
+       3. 显示器外壳 (最上层遮罩)
        ========================================= */
-    .desktop-area {
-      margin-top: 24px; /* 完美避开顶部的菜单栏 */
-      height: calc(100vh - 24px);
-      position: relative;
+    .monitor-overlay {
+      position: absolute;
+      top: 0; left: 0;
+      width: 100%; height: 100%;
+      object-fit: contain; /* 保证图片按比例完整显示 */
+      z-index: 20; /* 确保它在最上层 */
+      pointer-events: none; /* 让鼠标点击能穿透它，点到屏幕里 */
     }
+
+    /* =========================================
+       4. 屏幕内容区域 (被压在下面的网站内容)
+       ========================================= */
+    .screen-content {
+      position: absolute;
+      z-index: 10; /* 放在遮罩下面 */
+      background-color: #000; /* 屏幕底色 */
+      overflow: hidden; /* 切掉超出屏幕的内容 */
+      
+      /* ⚠️⚠️⚠️ 核心调试区：校准你的屏幕位置 ⚠️⚠️⚠️
+         你需要根据你抠图的实际位置，微调下面这四个数值（百分比），
+         直到你的网站画面完美地“卡”进显示器的透明洞里。*/
+      top: 10%;      /* 距离顶部边框的位置 */
+      left: 10%;     /* 距离左侧边框的位置 */
+      width: 80%;    /* 屏幕显示区域的宽度 */
+      height: 80%;   /* 屏幕显示区域的高度 */
+      
+      /* 稍微加一点圆角，配合CRT屏幕的弧度 */
+      border-radius: 2% / 3%;
+      
+      /* 在这里加载你的壁纸 */
+      background-image: url('/images/wallpaper.jpg');
+      background-size: cover;
+      background-position: right bottom;
+
+      /* 增加一点屏幕内发光和扫描线效果，增加真实感 */
+      box-shadow: inset 0 0 30px rgba(0,0,0,0.6);
+    }
+    
+    /* CRT 扫描线纹理层 */
+    .screen-content::after {
+      content: ""; position: absolute; top: 0; left: 0; width: 100%; height: 100%;
+      background: repeating-linear-gradient(0deg, rgba(0,0,0,0.1) 0px, rgba(0,0,0,0.1) 1px, transparent 1px, transparent 3px);
+      pointer-events: none; z-index: 30;
+    }
+
+    /* =========================================
+       5. 原有 Mac 系统元素的适配
+       ========================================= */
+    /* 菜单栏改为绝对定位 */
+    .mac-menubar {
+      position: absolute; top: 0; left: 0; width: 100%; height: 24px;
+      background: linear-gradient(to bottom, #ffffff 0%, #eeeeee 100%);
+      border-bottom: 1px solid #999;
+      display: flex; justify-content: space-between; align-items: center;
+      padding: 0 8px; font-size: 11px; user-select: none; z-index: 40;
+    }
+    .menubar-left { display: flex; gap: 8px; }
+    .apple-logo { font-size: 13px; }
+
+    /* 桌面区域适配 */
+    .desktop-area {
+      margin-top: 24px;
+      height: calc(100% - 24px);
+      position: relative;
+      z-index: 35;
+    }
+
+    /* Dock 栏改为绝对定位 */
+    .mac-dock-container {
+      position: absolute; bottom: 0; left: 50%;
+      transform: translateX(-50%) scale(0.85); /* 稍微缩小以适应屏幕 */
+      background: rgba(255, 255, 255, 0.25);
+      border: 1px solid rgba(255, 255, 255, 0.4);
+      border-bottom: none; border-radius: 8px 8px 0 0;
+      padding: 6px 12px 0 12px;
+      display: flex; gap: 6px; align-items: flex-end;
+      z-index: 50; /* 保证 Dock 在最前面 */
+      -webkit-box-reflect: below 0px linear-gradient(transparent, transparent 60%, rgba(255,255,255,0.2));
+    }
+    .dock-icon {
+      width: 48px; height: 48px; font-size: 24px;
+      background: linear-gradient(to bottom, rgba(255,255,255,0.8), rgba(200,200,200,0.8));
+      border-radius: 10px; display: flex; justify-content: center; align-items: center;
+      transition: transform 0.2s cubic-bezier(0.2, 0.8, 0.2, 1), margin 0.2s;
+    }
+    .dock-icon:hover { transform: scale(1.5) translateY(-8px); margin: 0 10px; z-index: 100; }
   </style>
 </head>
 <body>
 
-  <div class="mac-menubar">
-    <div class="menubar-left">
-      <span class="menubar-item apple-logo"></span>
-      <span class="menubar-item app-name">Finder</span>
-      <span class="menubar-item">File</span>
-      <span class="menubar-item">Edit</span>
-      <span class="menubar-item">View</span>
-      <span class="menubar-item">Go</span>
-      <span class="menubar-item">Special</span>
-      <span class="menubar-item">Help</span>
-    </div>
-    <div class="menubar-right">
-      <span class="menubar-item" id="system-clock">12:00 PM</span>
-    </div>
-  </div>
+  <div class="main-container">
+    
+    <img src="/images/monitor.png" class="monitor-overlay" alt="Retro CRT">
 
-  <div class="desktop-area">
-    {{ block "main" . }}{{ end }}
-  </div>
+    <div class="screen-content">
+      
+      <div class="mac-menubar">
+        <div class="menubar-left">
+          <span class="menubar-item apple-logo"></span>
+          <span class="menubar-item" style="font-weight:bold;">Finder</span>
+          <span>File</span><span>Edit</span><span>View</span><span>Go</span>
+        </div>
+        <div class="menubar-right">
+          <span id="system-clock">12:00 PM</span>
+        </div>
+      </div>
 
-  <div class="mac-dock-container">
-    <a href="/" class="dock-icon" title="Finder">📁</a>
-    <a href="/" class="dock-icon" title="Fiction">📝</a>
-    <a href="/" class="dock-icon" title="Cinema">🎬</a>
-    <a href="/admin/" class="dock-icon" title="Settings">⚙️</a>
-    <a href="/" class="dock-icon" title="Trash">🗑️</a>
+      <div class="desktop-area">
+        {{ block "main" . }}{{ end }}
+      </div>
+
+      <div class="mac-dock-container">
+        <a href="/" class="dock-icon">📁</a>
+        <a href="/" class="dock-icon">📝</a>
+        <a href="/" class="dock-icon">🎬</a>
+        <a href="/admin/" class="dock-icon">⚙️</a>
+        <a href="/" class="dock-icon">🗑️</a>
+      </div>
+
+    </div>
   </div>
 
   <script>
     function updateClock() {
       const now = new Date();
-      let hours = now.getHours();
-      let minutes = now.getMinutes();
-      const ampm = hours >= 12 ? 'PM' : 'AM';
-      hours = hours % 12;
-      hours = hours ? hours : 12; 
-      minutes = minutes < 10 ? '0' + minutes : minutes;
+      let hours = now.getHours(); let minutes = now.getMinutes(); const ampm = hours >= 12 ? 'PM' : 'AM';
+      hours = hours % 12; hours = hours ? hours : 12; minutes = minutes < 10 ? '0' + minutes : minutes;
       document.getElementById('system-clock').innerText = hours + ':' + minutes + ' ' + ampm;
     }
-    setInterval(updateClock, 1000);
-    updateClock();
+    setInterval(updateClock, 1000); updateClock();
   </script>
 
 </body>
