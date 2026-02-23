@@ -1,199 +1,86 @@
 {{ define "main" }}
 <style>
-  /* =========================================
-     全局重置与字体
-     ========================================= */
-  :root {
-    --mac-gray: #e8e8e8;
-    --mac-blue: #007aff;
-  }
-  
-  body { margin: 0; padding: 0; font-family: 'Trebuchet MS', Tahoma, sans-serif; }
-
-  /* =========================================
-     形态 A：手机端 (iOS / Frutiger Aero App 矩阵)
-     默认加载这套手机样式
-     ========================================= */
-  .mobile-view {
-    display: block; /* 在手机上显示 */
-    min-height: 100vh;
-    /* 注入经典的 Bliss 蓝天绿地背景 */
-    background: url('https://upload.wikimedia.org/wikipedia/en/7/7d/Bliss.png') no-repeat center center fixed;
-    background-size: cover;
-    padding: 40px 20px;
-  }
-
-  .app-grid {
-    display: grid;
-    grid-template-columns: repeat(3, 1fr); /* 一排三个 App */
-    gap: 25px 15px;
-    justify-items: center;
-  }
-
-  .app-icon-wrapper {
-    display: flex;
-    flex-direction: column;
-    align-items: center;
-    text-decoration: none;
-    color: white;
-    text-shadow: 1px 1px 2px rgba(0,0,0,0.8);
-    font-weight: bold;
-    font-size: 13px;
-  }
-
-  /* 拟物化高光玻璃 App 图标 */
-  .app-icon {
-    width: 65px;
-    height: 65px;
-    border-radius: 16px;
-    margin-bottom: 8px;
-    /* 基础渐变 */
-    background: linear-gradient(180deg, #5fc3e4 0%, #e55d87 100%);
-    box-shadow: 0 4px 8px rgba(0,0,0,0.3), inset 0 2px 2px rgba(255,255,255,0.5);
-    position: relative;
+  /* 纯粹的 Mac 视窗样式，背景彻底透明，让底层的同人壁纸透出来 */
+  .mac-window {
+    width: 700px;
+    background: #fff;
+    border-radius: 8px;
+    box-shadow: 0 20px 50px rgba(0,0,0,0.6); /* 加深一点阴影，更有实体感 */
+    border: 1px solid #999;
     overflow: hidden;
+    margin: 80px auto; /* 让窗口在屏幕中间偏上的位置悬浮 */
   }
 
-  /* 灵魂：图标上半部分的玻璃反光 (Glossy Reflection) */
-  .app-icon::after {
-    content: '';
-    position: absolute;
-    top: 0; left: 0; right: 0; height: 50%;
-    background: linear-gradient(180deg, rgba(255,255,255,0.7) 0%, rgba(255,255,255,0.1) 100%);
-    border-radius: 16px 16px 8px 8px / 16px 16px 20px 20px;
+  /* 金属拉丝质感标题栏 */
+  .mac-titlebar {
+    background: linear-gradient(to bottom, #f2f2f2 0%, #d4d4d4 100%);
+    border-bottom: 1px solid #a0a0a0;
+    padding: 6px 10px;
+    display: flex;
+    align-items: center;
+    position: relative;
   }
 
-  /* 区分一下 Fiction 和 Cinema 的颜色 */
-  .icon-fiction { background: linear-gradient(180deg, #a8ff78 0%, #78ffd6 100%); }
-  .icon-cinema { background: linear-gradient(180deg, #ff9a9e 0%, #fecfef 100%); }
+  /* 经典的红黄绿交通灯按钮 */
+  .mac-buttons { display: flex; gap: 6px; z-index: 1; }
+  .mac-btn { width: 12px; height: 12px; border-radius: 50%; border: 1px solid rgba(0,0,0,0.2); box-shadow: inset 0 1px 2px rgba(255,255,255,0.8);}
+  .btn-red { background: linear-gradient(to bottom, #ff5f56, #e0443e); }
+  .btn-yellow { background: linear-gradient(to bottom, #ffbd2e, #dea123); }
+  .btn-green { background: linear-gradient(to bottom, #27c93f, #1aab29); }
 
-  /* 电脑端视窗默认隐藏 */
-  .desktop-view { display: none; }
-
-
-  /* =========================================
-     形态 B：电脑端 (Mac OS X Aqua 视窗)
-     当屏幕宽度大于 768px 时，触发这个魔法开关
-     ========================================= */
-  @media (min-width: 768px) {
-    /* 隐藏手机界面 */
-    .mobile-view { display: none; }
-    
-    /* 展现电脑界面 */
-    .desktop-view {
-      display: flex;
-      justify-content: center;
-      align-items: center;
-      min-height: 80vh;
-      background: #3b88d8; /* Mac 经典的深蓝色桌面 */
-      /* Mac 经典细条纹背景 */
-      background-image: repeating-linear-gradient(0deg, transparent, transparent 2px, rgba(255,255,255,0.1) 2px, rgba(255,255,255,0.1) 4px);
-    }
-
-    /* 经典 Aqua 视窗 */
-    .mac-window {
-      width: 700px;
-      background: #fff;
-      border-radius: 8px;
-      box-shadow: 0 20px 50px rgba(0,0,0,0.5);
-      border: 1px solid #999;
-      overflow: hidden;
-    }
-
-    /* 金属拉丝质感标题栏 */
-    .mac-titlebar {
-      background: linear-gradient(to bottom, #f2f2f2 0%, #d4d4d4 100%);
-      border-bottom: 1px solid #a0a0a0;
-      padding: 6px 10px;
-      display: flex;
-      align-items: center;
-      position: relative;
-    }
-
-    /* 经典的红黄绿交通灯按钮 */
-    .mac-buttons { display: flex; gap: 6px; }
-    .mac-btn { width: 12px; height: 12px; border-radius: 50%; border: 1px solid rgba(0,0,0,0.2); box-shadow: inset 0 1px 2px rgba(255,255,255,0.8);}
-    .btn-red { background: linear-gradient(to bottom, #ff5f56, #e0443e); }
-    .btn-yellow { background: linear-gradient(to bottom, #ffbd2e, #dea123); }
-    .btn-green { background: linear-gradient(to bottom, #27c93f, #1aab29); }
-
-    .mac-title {
-      position: absolute; width: 100%; text-align: center;
-      font-size: 13px; font-weight: bold; color: #444; z-index: 0;
-      text-shadow: 0 1px 0 rgba(255,255,255,0.8);
-      pointer-events: none;
-    }
-
-    .mac-content { padding: 30px; display: flex; gap: 30px; }
-    
-    /* 电脑端的文件列表样式 */
-    .mac-folder { flex: 1; border: 1px solid #ccc; background: #fafafa; }
-    .mac-folder-title { background: #e0e0e0; padding: 5px; font-size: 12px; font-weight: bold; border-bottom: 1px solid #ccc;}
-    .mac-list { list-style: none; padding: 0; margin: 0; }
-    .mac-list li { border-bottom: 1px solid #eee; }
-    .mac-list a { display: block; padding: 8px 10px; color: #000; text-decoration: none; font-size: 13px;}
-    .mac-list a:hover { background: var(--mac-blue); color: #fff; }
+  .mac-title {
+    position: absolute; width: 100%; text-align: center;
+    font-size: 13px; font-weight: bold; color: #444;
+    text-shadow: 0 1px 0 rgba(255,255,255,0.8);
+    pointer-events: none;
   }
+
+  .mac-content { padding: 30px; display: flex; gap: 30px; background: #e8e8e8; }
+  
+  .mac-folder { flex: 1; border: 1px solid #ccc; background: #fff; border-radius: 4px; overflow: hidden; box-shadow: inset 0 1px 3px rgba(0,0,0,0.1);}
+  .mac-folder-title { background: #dfdfdf; padding: 5px 10px; font-size: 12px; font-weight: bold; border-bottom: 1px solid #ccc; display: flex; align-items: center; gap: 5px; color: #333;}
+  .mac-list { list-style: none; padding: 0; margin: 0; }
+  .mac-list li { border-bottom: 1px solid #f0f0f0; }
+  .mac-list a { display: block; padding: 8px 10px; color: #222; text-decoration: none; font-size: 13px;}
+  
+  /* Mac 经典的条纹高亮选中效果 */
+  .mac-list a:hover { background: #0058e6; color: #fff; text-shadow: none; }
 </style>
 
-<div class="mobile-view">
-  <div class="app-grid">
-    
-    {{ range first 6 (where .Site.RegularPages "Section" "fiction") }}
-      <a href="{{ .RelPermalink }}" class="app-icon-wrapper">
-        <div class="app-icon icon-fiction"></div>
-        <span style="margin-top: 5px; text-align: center;">{{ .Title }}</span>
-      </a>
-    {{ end }}
-
-    {{ range first 6 (where .Site.RegularPages "Section" "cinema") }}
-      <a href="{{ .RelPermalink }}" class="app-icon-wrapper">
-        <div class="app-icon icon-cinema"></div>
-        <span style="margin-top: 5px; text-align: center;">{{ .Title }}</span>
-      </a>
-    {{ end }}
-
-    <a href="/admin/" class="app-icon-wrapper">
-      <div class="app-icon" style="background: linear-gradient(180deg, #ccc, #888);"></div>
-      <span style="margin-top: 5px;">Settings</span>
-    </a>
-
+<div class="mac-window">
+  <div class="mac-titlebar">
+    <div class="mac-buttons">
+      <div class="mac-btn btn-red"></div>
+      <div class="mac-btn btn-yellow"></div>
+      <div class="mac-btn btn-green"></div>
+    </div>
+    <div class="mac-title">Finder - Handoz Archive</div>
   </div>
-</div>
 
-<div class="desktop-view">
-  <div class="mac-window">
+  <div class="mac-content">
     
-    <div class="mac-titlebar">
-      <div class="mac-buttons" style="z-index: 1;">
-        <div class="mac-btn btn-red"></div>
-        <div class="mac-btn btn-yellow"></div>
-        <div class="mac-btn btn-green"></div>
-      </div>
-      <div class="mac-title">Finder - Handoz Archive</div>
+    <div class="mac-folder">
+      <div class="mac-folder-title">📁 Fiction</div>
+      <ul class="mac-list">
+        {{ range first 5 (where .Site.RegularPages "Section" "fiction") }}
+          <li><a href="{{ .RelPermalink }}">📄 {{ .Title }}</a></li>
+        {{ else }}
+          <li style="padding: 10px; color: #999; font-size: 12px;">Data Empty</li>
+        {{ end }}
+      </ul>
     </div>
 
-    <div class="mac-content">
-      
-      <div class="mac-folder">
-        <div class="mac-folder-title">📁 Fiction (Text Documents)</div>
-        <ul class="mac-list">
-          {{ range first 5 (where .Site.RegularPages "Section" "fiction") }}
-            <li><a href="{{ .RelPermalink }}">📄 {{ .Title }}</a></li>
-          {{ end }}
-        </ul>
-      </div>
-
-      <div class="mac-folder">
-        <div class="mac-folder-title">🎬 Cinema (Media Files)</div>
-        <ul class="mac-list">
-          {{ range first 5 (where .Site.RegularPages "Section" "cinema") }}
-            <li><a href="{{ .RelPermalink }}">🎞️ {{ .Title }}</a></li>
-          {{ end }}
-        </ul>
-      </div>
-
+    <div class="mac-folder">
+      <div class="mac-folder-title">🎬 Cinema</div>
+      <ul class="mac-list">
+        {{ range first 5 (where .Site.RegularPages "Section" "cinema") }}
+          <li><a href="{{ .RelPermalink }}">🎞️ {{ .Title }}</a></li>
+        {{ else }}
+          <li style="padding: 10px; color: #999; font-size: 12px;">Signal Lost</li>
+        {{ end }}
+      </ul>
     </div>
+
   </div>
 </div>
 {{ end }}
