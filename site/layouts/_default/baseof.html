@@ -12,22 +12,25 @@
     body {
       margin: 0; padding: 0;
       font-family: "Lucida Grande", "Lucida Sans Unicode", Tahoma, sans-serif;
-      /* 因为你的图片自带黑色背景，这里底色设为纯黑即可 */
-      background-color: #000;
+      /* 配合这张图的冷峻感，背景用纯深黑 */
+      background-color: #080808;
       height: 100vh; width: 100vw;
       display: flex; justify-content: center; align-items: center;
-      overflow: hidden; /* 禁止滚动条出现 */
+      overflow: hidden;
     }
 
     /* =========================================
-       2. 主容器 (The Main Rig)
+       2. 主容器 (已放大尺寸)
        ========================================= */
     .main-container {
       position: relative;
-      /* 限制最大尺寸，保持4:3比例，防止在大屏上溢出 */
-      width: auto;
-      height: 96vh; /* 高度占满屏幕96%，留一点边 */
+      /* 【改动点 1：放大显示器】 */
+      /* 我们让宽度和高度都尽量撑满屏幕，同时保持4:3比例 */
+      width: 98vw;  /* 宽度几乎占满 */
+      height: 98vh; /* 高度几乎占满 */
+      max-width: 1400px; /* 设置一个最大上限，防止超宽屏太离谱 */
       aspect-ratio: 4 / 3; 
+      
       display: flex;
       justify-content: center;
       align-items: center;
@@ -40,51 +43,53 @@
       position: absolute;
       top: 0; left: 0;
       width: 100%; height: 100%;
-      object-fit: contain; /* 保证图片按比例完整显示 */
-      z-index: 20; /* 确保它在最上层 */
-      pointer-events: none; /* 让鼠标点击能穿透它，点到屏幕里 */
+      object-fit: contain;
+      z-index: 20; /* 在最上层 */
+      pointer-events: none; /* 鼠标穿透 */
+      /* 给显示器加一点点环境光投影，更真实 */
+      filter: drop-shadow(0 10px 20px rgba(0,0,0,0.8));
     }
 
     /* =========================================
-       4. 屏幕内容区域 (被压在下面的网站内容)
+       4. 屏幕内容区域 (针对新图的精准校准)
        ========================================= */
     .screen-content {
       position: absolute;
-      z-index: 10; /* 放在遮罩下面 */
-      background-color: #000; /* 屏幕底色 */
-      overflow: hidden; /* 切掉超出屏幕的内容 */
+      z-index: 10; /* 在遮罩下面 */
+      background-color: #000;
+      overflow: hidden;
       
-      /* ⚠️⚠️⚠️ 核心调试区：校准你的屏幕位置 ⚠️⚠️⚠️
-         你需要根据你抠图的实际位置，微调下面这四个数值（百分比），
-         直到你的网站画面完美地“卡”进显示器的透明洞里。*/
-      top: 10%;      /* 距离顶部边框的位置 */
-      left: 10%;     /* 距离左侧边框的位置 */
-      width: 80%;    /* 屏幕显示区域的宽度 */
-      height: 80%;   /* 屏幕显示区域的高度 */
+      /* ⚠️⚠️⚠️ 【改动点 2：针对你这张图的校准参数】 ⚠️⚠️⚠️
+         我已经根据图片肉眼预估了这些数值。
+         如果刷新后发现边缘还有黑边或被切掉了，请微调这四个数字。*/
+      top: 9%;       /* 上边框厚度 */
+      left: 7.5%;    /* 左边框厚度 */
+      width: 85%;    /* 屏幕显示宽度 */
+      height: 78%;   /* 屏幕显示高度 (底部下巴比较厚) */
       
       /* 稍微加一点圆角，配合CRT屏幕的弧度 */
-      border-radius: 2% / 3%;
+      border-radius: 3% / 4%;
       
-      /* 在这里加载你的壁纸 */
-      background-image: url('/img/wallpaper.jpg');
+      /* 加载壁纸 */
+      background-image: url('/images/wallpaper.jpg');
       background-size: cover;
       background-position: right bottom;
 
-      /* 增加一点屏幕内发光和扫描线效果，增加真实感 */
-      box-shadow: inset 0 0 30px rgba(0,0,0,0.6);
+      /* 内发光 */
+      box-shadow: inset 0 0 40px rgba(0,0,0,0.8);
     }
     
-    /* CRT 扫描线纹理层 */
+    /* CRT 扫描线纹理层 (稍微调淡了一点，配合这张图的干净感) */
     .screen-content::after {
       content: ""; position: absolute; top: 0; left: 0; width: 100%; height: 100%;
-      background: repeating-linear-gradient(0deg, rgba(0,0,0,0.1) 0px, rgba(0,0,0,0.1) 1px, transparent 1px, transparent 3px);
+      background: repeating-linear-gradient(0deg, rgba(255,255,255,0.03) 0px, rgba(255,255,255,0.03) 1px, transparent 1px, transparent 3px);
       pointer-events: none; z-index: 30;
+      mix-blend-mode: overlay;
     }
 
     /* =========================================
-       5. 原有 Mac 系统元素的适配
+       5. 原有 Mac 系统元素的适配 (保持不变)
        ========================================= */
-    /* 菜单栏改为绝对定位 */
     .mac-menubar {
       position: absolute; top: 0; left: 0; width: 100%; height: 24px;
       background: linear-gradient(to bottom, #ffffff 0%, #eeeeee 100%);
@@ -95,7 +100,6 @@
     .menubar-left { display: flex; gap: 8px; }
     .apple-logo { font-size: 13px; }
 
-    /* 桌面区域适配 */
     .desktop-area {
       margin-top: 24px;
       height: calc(100% - 24px);
@@ -103,16 +107,15 @@
       z-index: 35;
     }
 
-    /* Dock 栏改为绝对定位 */
     .mac-dock-container {
       position: absolute; bottom: 0; left: 50%;
-      transform: translateX(-50%) scale(0.85); /* 稍微缩小以适应屏幕 */
+      transform: translateX(-50%) scale(0.85);
       background: rgba(255, 255, 255, 0.25);
       border: 1px solid rgba(255, 255, 255, 0.4);
       border-bottom: none; border-radius: 8px 8px 0 0;
       padding: 6px 12px 0 12px;
       display: flex; gap: 6px; align-items: flex-end;
-      z-index: 50; /* 保证 Dock 在最前面 */
+      z-index: 50;
       -webkit-box-reflect: below 0px linear-gradient(transparent, transparent 60%, rgba(255,255,255,0.2));
     }
     .dock-icon {
@@ -128,7 +131,7 @@
 
   <div class="main-container">
     
-    <img src="/img/monitor.png" class="monitor-overlay" alt="Retro CRT">
+    <img src="/images/monitor.png" class="monitor-overlay" alt="Retro CRT">
 
     <div class="screen-content">
       
